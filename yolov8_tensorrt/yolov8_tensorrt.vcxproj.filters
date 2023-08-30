@@ -30,6 +30,9 @@
     <ClCompile Include="logger.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="postprocess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="preprocess.h">
@@ -45,6 +48,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="logger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="postprocess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="cuda_utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

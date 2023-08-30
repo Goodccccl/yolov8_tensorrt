@@ -147,13 +147,16 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="preprocess.cpp" />
+    <ClCompile Include="postprocess.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cuda_utils.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="infer.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="preprocess.h" />
+    <ClInclude Include="postprocess.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
