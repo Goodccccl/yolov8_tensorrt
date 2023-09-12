@@ -147,7 +147,8 @@ bool normalization(cv::Mat mat, float *data)
 }
 
 
-float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h)
+float* preprocess(std::string image_path, int target_height, int target_width)
+//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h)
 {
 	float* data = (float*)malloc(sizeof(float) * 3 * target_width * target_height);
 	std::vector<cv::Mat> srcImg;
@@ -155,10 +156,15 @@ float* preprocess(std::string image_path, int target_height, int target_width, i
 	load_images(image_path, srcImg);
 	cv::Mat mat_rs;
 	YOLOV5ScaleParams scale_params;
-	resize_images(srcImg.at(0), mat_rs, target_height, target_width, scale_params, new_w, new_h);
-	//resize_images2(srcImg.at(0), mat_rs, target_height, target_width, scale_params);
+	//resize_images(srcImg.at(0), mat_rs, target_height, target_width, scale_params, new_w, new_h);
+	resize_images2(srcImg.at(0), mat_rs, target_height, target_width, scale_params);
 	vetyolovtparams.push_back(scale_params);
 	normalization(mat_rs, data);
+	//std::ofstream outfile("./result.txt");
+ //   for (int i = 0; i < 3 * target_width * target_height; i++) {
+ //       outfile << data[i] << std::endl;
+ //   }
+ //   outfile.close();
 	return data;
 }
 
@@ -199,14 +205,36 @@ cv::Mat preprocess3(std::string image_path, int target_height, int target_width)
 	return src;
 }
 
-//int main()
-//{
-//	std::string image_path = "F:\\test\\b1e8eaac1fd5ff5ff338351ac27c5c09.jpg";
-//	float* data = preprocess(image_path, 64, 64);
-//	std::ofstream outfile("F:\\123.txt");
-//	for (int i = 0; i < 3*64*64; i++)
-//	{
-//		outfile << data[i] << std::endl;
-//	}
-//	outfile.close();
-//}
+
+cv::Mat preprocess4(std::string image_path)
+{
+	cv::Mat image = cv::imread(image_path);
+	//cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+	int origin_height = image.size().height;
+	int origin_width = image.size().width;
+
+	/***************************** preprocess *****************************/
+	// 缩放
+	int dst_size = 640;
+	float ratio = std::min((float)dst_size / origin_height, (float)dst_size / origin_width);
+	int new_height = (int)(origin_height * ratio);
+	int new_width = (int)(origin_width * ratio);
+	std::cout << new_height << " " << new_width << std::endl;                     // 640 480
+	cv::resize(image, image, cv::Size(new_width, new_height));
+
+	// 填充为正方形
+	int padding_height = dst_size - new_height;
+	int padding_width = dst_size - new_width;
+	std::cout << padding_height << " " << padding_width << std::endl;             // 0 160
+	// 填充右下角
+	cv::copyMakeBorder(image, image, 0, padding_height, 0, padding_width, cv::BorderTypes::BORDER_CONSTANT, { 114, 114, 114 });
+	//cv::imshow("0", image);
+	//cv::waitKey(0);
+
+	// 转换为float并归一化
+	image.convertTo(image, CV_32FC3, 1.0f / 255.0f, 0);
+
+	// hwc -> nchw
+	cv::Mat blob = cv::dnn::blobFromImage(image);
+	return blob;
+}

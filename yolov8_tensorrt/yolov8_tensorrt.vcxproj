@@ -148,6 +148,7 @@
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="preprocess.cpp" />
     <ClCompile Include="postprocess.cpp" />
+    <ClCompile Include="val.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cuda_utils.h" />

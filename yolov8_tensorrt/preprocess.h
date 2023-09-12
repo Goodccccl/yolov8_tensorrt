@@ -24,8 +24,11 @@ void resize_images2(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target
 bool normalization(cv::Mat mat, float* data);
 
 /* Ô¤´¦Àí×Ü */
-float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h);
+float* preprocess(std::string image_path, int target_height, int target_width);
+//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h);
 
 cv::Mat preprocess2(std::string image_path, int target_height, int target_width);
 
 cv::Mat preprocess3(std::string image_path, int target_height, int target_width);
+
+cv::Mat preprocess4(std::string image_path);
