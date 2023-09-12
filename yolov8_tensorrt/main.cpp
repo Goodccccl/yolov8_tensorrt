@@ -14,6 +14,5 @@ int main() {
 	std::string trt_Path = "D:\\TensorRT-8.6.1.6\\bin\\yolov8n.trt";
 	//std::string trt_Path = "D:\\TensorRT-8.6.1.6\\bin\\yolov8n_384_640.trt";
 
-	float* outputData = infer(param, trt_Path, img_Path);
-	std::cout << outputData << std::endl;
+	std::vector<float*> outputData = infer(param, trt_Path, img_Path);
 }

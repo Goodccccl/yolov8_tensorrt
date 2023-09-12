@@ -45,7 +45,31 @@ int volume(nvinfer1::Dims dims)
 	return result;
 }
 
-float* infer(Parameters param, const std::string enginePath, const std::string imgPath)
+
+std::vector<Detection> Arrange_outputs(std::vector<float*> outputs, int output_anchorsNb, int output_anchorsOne)
+{
+	std::vector<Detection> outputs_arrange;
+	for (int i = 0; i < output_anchorsNb; i++)
+	{
+		Detection temporary;
+		temporary.box[0] = outputs[0][4 * i];
+		temporary.box[1] = outputs[0][4 * i + 1];
+		temporary.box[2] = outputs[0][4 * i + 2];
+		temporary.box[3] = outputs[0][4 * i + 3];
+		int start = 4 * output_anchorsNb + i * (output_anchorsOne-4);
+		//std::cout << "start:" << start << std::endl;
+		int end = 4 * output_anchorsNb + i * (output_anchorsOne-4) + (output_anchorsOne-4);
+		//std::cout << "end:" << end << std::endl;
+		temporary.conf = *std::max_element(outputs[0] + start, outputs[0] + end);
+		temporary.class_id = (std::max_element(outputs[0] + start, outputs[0] + end) - outputs[0]) - start;
+		outputs_arrange.push_back(temporary);
+		//std::cout << i << std::endl;
+	}
+	return outputs_arrange;
+}
+
+
+std::vector<Detection> infer(Parameters param, const std::string enginePath, const std::string imgPath)
 {
 	std::vector<unsigned char> model_data = load_engine(enginePath);
 	nvinfer1::IRuntime* runtime = nvinfer1::createInferRuntime(sample::gLogger.getTRTLogger());
@@ -60,7 +84,8 @@ float* infer(Parameters param, const std::string enginePath, const std::string i
 	int num_bindings = engine->getNbBindings();
 	void* bindings[2];
 	std::vector<int>bindings_mem;	// 内存大小
-
+	int output_anchorsOne = 0;
+	int output_anchorsNb = 0;
 	for (int i = 0; i < num_bindings; i++)
 	{
 		const char* name;
@@ -73,6 +98,12 @@ float* infer(Parameters param, const std::string enginePath, const std::string i
 		mode = engine->bindingIsInput(i);
 		dtype = engine->getBindingDataType(i);
 		dims = engine->getBindingDimensions(i);
+
+		if (i == num_bindings - 1)
+		{
+			output_anchorsOne = dims.d[1];
+			output_anchorsNb = dims.d[2];
+		}
 
 		totalSize = volume(dims) * sizeof(float);
 		bindings_mem.push_back(totalSize);
@@ -94,16 +125,12 @@ float* infer(Parameters param, const std::string enginePath, const std::string i
 	context->enqueueV2(bindings, stream, nullptr);
 
 	cudaMemcpy(outputs[0], bindings[1], bindings_mem[1], cudaMemcpyDeviceToHost);
+	// 整理输出
+	std::vector<Detection> outputs_arrange;
+	outputs_arrange = Arrange_outputs(outputs, output_anchorsNb, output_anchorsOne);
+	return outputs_arrange;
 
-	std::cout << (outputs[0][100]) << std::endl;
-	
-	std::ofstream abc;
-	abc.open("F:\\1234.txt");
-	for (int i = 0; i < (bindings_mem[1] / sizeof(float)); i++)
-	{
-		abc << outputs[0][i] << std::endl;
-	}
- 	abc.close();
-	
-	return 0;
+	context->destroy();
+	engine->destroy();
+	runtime->destroy();
 }

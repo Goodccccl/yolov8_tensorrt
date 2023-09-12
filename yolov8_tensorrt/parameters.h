@@ -17,5 +17,5 @@ typedef struct Parameters {
 struct alignas(float) Detection {
 	float box[4];
 	float conf;
-	float class_id;
+	int class_id;
 };

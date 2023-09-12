@@ -5,4 +5,4 @@
 /* ¼ÓÔØÄ£ĞÍ */
 std::vector<unsigned char> load_engine(const std::string enginePath);
 
-float* infer(Parameters param, const std::string enginePath, const std::string imgPath);
+std::vector<Detection> infer(Parameters param, const std::string enginePath, const std::string imgPath);
