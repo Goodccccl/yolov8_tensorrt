@@ -48,9 +48,9 @@ int volume(nvinfer1::Dims dims)
 
 std::vector<float> get_anchorOne(std::vector<float*> outputs, int start, int output_anchorsNb, int output_anchorsOne)
 {
-	int step = 8400;
+	int step = output_anchorsNb;
 	std::vector<float> anchor_one;
-	while (start < 8400 * 84)	// 修改模型需要改变
+	while (start < output_anchorsNb * output_anchorsOne)	// 修改模型需要改变
 	{
 		anchor_one.push_back(outputs[0][start]);
 		start += step;
@@ -58,10 +58,10 @@ std::vector<float> get_anchorOne(std::vector<float*> outputs, int start, int out
 	return anchor_one;
 }
 
-std::vector<float> get_anchorCls(std::vector<float> anchorOne)
+std::vector<float> get_anchorCls(std::vector<float> anchorOne, int output_anchorsOne)
 {
 	std::vector<float> anchorCls;
-	for (int i = 4; i < 84; i++)
+	for (int i = 4; i < output_anchorsOne; i++)
 	{
 		float cls = anchorOne[i];
 		anchorCls.push_back(cls);
@@ -78,7 +78,7 @@ std::vector<Detection> Arrange_outputs(std::vector<float*> outputs, int output_a
 	{
 		std::vector<float> anchorOne = get_anchorOne(outputs, i, output_anchorsNb, output_anchorsOne);
 		Detection temporary;
-		std::vector<float> anchorCls = get_anchorCls(anchorOne);
+		std::vector<float> anchorCls = get_anchorCls(anchorOne, output_anchorsOne);
 		temporary.conf = *std::max_element(anchorCls.begin(), anchorCls.end());
 		if (temporary.conf > set_conf)
 		{
