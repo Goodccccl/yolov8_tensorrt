@@ -19,3 +19,12 @@ struct alignas(float) Detection {
 	float conf;
 	int class_id;
 };
+
+typedef struct
+{
+	float r; // ratio
+	int dw;
+	int dh;	// 左右两边填充的量
+	int new_unpad_w;
+	int new_unpad_h;	// 宽和高未填充前的长度
+} YOLOV5ScaleParams;

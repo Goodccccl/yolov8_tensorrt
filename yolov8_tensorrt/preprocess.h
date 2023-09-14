@@ -1,14 +1,6 @@
 #pragma once
 #include"includes.h"
-
-typedef struct
-{
-	float r; // ratio
-	int dw;
-	int dh;	// 左右两边填充的量
-	int new_unpad_w;
-	int new_unpad_h;	// 宽和高未填充前的长度
-} YOLOV5ScaleParams;
+#include "parameters.h"
 
 
 /* 加载需要预测的图片 */
@@ -24,8 +16,8 @@ void resize_images2(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target
 bool normalization(cv::Mat mat, float* data);
 
 /* 预处理总 */
-float* preprocess(std::string image_path, int target_height, int target_width);
-//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h);
+float* preprocess(std::string image_path, int target_height, int target_width, std::vector<YOLOV5ScaleParams> &vetyolovtparams);
+//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h, std::vector<YOLOV5ScaleParams> &vetyolovtparams);
 
 cv::Mat preprocess2(std::string image_path, int target_height, int target_width);
 

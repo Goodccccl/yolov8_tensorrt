@@ -22,6 +22,7 @@ bool load_images(std::string imagePath, std::vector<cv::Mat> &srcImg)
 		}
 		else
 		{
+			cv::cvtColor(srcimg, srcimg, cv::COLOR_BGR2RGB);
 			srcImg.push_back(srcimg);
 		}
 		return true;
@@ -119,25 +120,21 @@ void resize_images2(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target
 	scale_params.new_unpad_h = new_unpad_h;
 }
 
-/* 归一化 && hwc2chw && bgr2rgb */
+/* 归一化 && hwc2chw */
 bool normalization(cv::Mat mat, float *data)
 {
 	if (mat.empty()) return false;
 	int i = 0;
 	for (int row = 0; row < mat.rows; row++) {
 		uchar* uc_pixel = mat.data + row * mat.step;
+		//std::cout << mat.step << std::endl;
+		for (int col = 0; col < mat.cols; col++) {
 
-		for (int col = 0; col < mat.cols; ++col) {
-			/*std::cout << "col" << '=' << col << ":" << (float)uc_pixel[2] << ',' << (float)uc_pixel[1] << ',' << (float)uc_pixel[0] << ',' << std::endl;*/
-
-			//std::cout << "i=" << i << ":" << "   index" << '=' << i << ":" << (float)uc_pixel[2] <<
-			//	"   index" << '=' << i + mat.rows * mat.cols << ":" << (float)uc_pixel[1] <<
-			//	"   index" << '=' << i + 2 * mat.rows * mat.cols << ":" << (float)uc_pixel[0] << std::endl;
-			data[i] = (float)uc_pixel[2] / 255.0;
+			data[i] = (float)uc_pixel[0] / 255.0;
 
 			data[i + mat.rows * mat.cols] = (float)uc_pixel[1] / 255.0;
 
-			data[i + 2 * mat.rows * mat.cols] = (float)uc_pixel[0] / 255.0;
+			data[i + 2 * mat.rows * mat.cols] = (float)uc_pixel[2] / 255.0;
 
 			uc_pixel += 3;
 			++i;
@@ -147,20 +144,20 @@ bool normalization(cv::Mat mat, float *data)
 }
 
 
-float* preprocess(std::string image_path, int target_height, int target_width)
-//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h)
+float* preprocess(std::string image_path, int target_height, int target_width, std::vector<YOLOV5ScaleParams> &vetyolovtparams)
+//float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h, std::vector<YOLOV5ScaleParams>& vetyolovtparams)
 {
 	float* data = (float*)malloc(sizeof(float) * 3 * target_width * target_height);
 	std::vector<cv::Mat> srcImg;
-	std::vector<YOLOV5ScaleParams> vetyolovtparams;
 	load_images(image_path, srcImg);
 	cv::Mat mat_rs;
 	YOLOV5ScaleParams scale_params;
 	//resize_images(srcImg.at(0), mat_rs, target_height, target_width, scale_params, new_w, new_h);
 	resize_images2(srcImg.at(0), mat_rs, target_height, target_width, scale_params);
+	//cv::imwrite("D:\\1\\1280.jpg", mat_rs);
 	vetyolovtparams.push_back(scale_params);
 	normalization(mat_rs, data);
-	//std::ofstream outfile("./result.txt");
+	//std::ofstream outfile("D:\\1\\cpp\\preprocess.txt");
  //   for (int i = 0; i < 3 * target_width * target_height; i++) {
  //       outfile << data[i] << std::endl;
  //   }
