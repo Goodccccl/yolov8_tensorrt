@@ -27,4 +27,4 @@ typedef struct
 	int dh;	// 左右两边填充的量
 	int new_unpad_w;
 	int new_unpad_h;	// 宽和高未填充前的长度
-} YOLOV5ScaleParams;
+} YOLOV8ScaleParams;

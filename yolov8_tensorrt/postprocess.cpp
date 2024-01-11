@@ -52,7 +52,7 @@ std::vector<Detection> nms(std::vector<Detection> outputs_arrange, float thresho
 }
 
 
-cv::Mat draw(std::string src_imgPath, std::vector<YOLOV5ScaleParams> vetyolovtparams, std::vector<Detection> nms_result)
+cv::Mat draw(std::string src_imgPath, std::vector<YOLOV8ScaleParams> vetyolovtparams, std::vector<Detection> nms_result)
 {
 	cv::Mat img = cv::imread(src_imgPath, 1);
 	cv::Mat img_;

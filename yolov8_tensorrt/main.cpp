@@ -17,7 +17,7 @@ int main() {
 	std::string img_Path = "D:\\2\\123.bmp";
 	std::string trt_Path = "D:\\TensorRT-8.6.1.6\\bin\\best.trt";
 	//std::string trt_Path = "D:\\TensorRT-8.6.1.6\\bin\\yolov8n_384_640.trt";
-	std::vector<YOLOV5ScaleParams> vetyolovtparams;
+	std::vector<YOLOV8ScaleParams> vetyolovtparams;
 	std::vector<Detection> outputData = infer(param, trt_Path, img_Path, vetyolovtparams);
 	std::vector<Detection> nms_result = nms(outputData, param.iou);
 	// 结果绘制回原图

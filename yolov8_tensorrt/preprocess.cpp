@@ -30,7 +30,7 @@ bool load_images(std::string imagePath, std::vector<cv::Mat> &srcImg)
 }
 
 
-void resize_images(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target_width, YOLOV5ScaleParams& scale_params, int& new_w, int& new_h)
+void resize_images(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target_width, YOLOV8ScaleParams& scale_params, int& new_w, int& new_h)
 {
 	if (mat.empty()) return;
 	int img_height = static_cast<int>(mat.rows);
@@ -76,7 +76,7 @@ void resize_images(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target_
 }
 
 
-void resize_images2(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target_width, YOLOV5ScaleParams& scale_params)
+void resize_images2(cv::Mat& mat, cv::Mat& mat_rs, int target_height, int target_width, YOLOV8ScaleParams& scale_params)
 {
 	if (mat.empty()) return;
 	int img_height = static_cast<int>(mat.rows);
@@ -144,14 +144,14 @@ bool normalization(cv::Mat mat, float *data)
 }
 
 
-float* preprocess(std::string image_path, int target_height, int target_width, std::vector<YOLOV5ScaleParams> &vetyolovtparams)
+float* preprocess(std::string image_path, int target_height, int target_width, std::vector<YOLOV8ScaleParams> &vetyolovtparams)
 //float* preprocess(std::string image_path, int target_height, int target_width, int& new_w, int& new_h, std::vector<YOLOV5ScaleParams>& vetyolovtparams)
 {
 	float* data = (float*)malloc(sizeof(float) * 3 * target_width * target_height);
 	std::vector<cv::Mat> srcImg;
 	load_images(image_path, srcImg);
 	cv::Mat mat_rs;
-	YOLOV5ScaleParams scale_params;
+	YOLOV8ScaleParams scale_params;
 	//resize_images(srcImg.at(0), mat_rs, target_height, target_width, scale_params, new_w, new_h);
 	resize_images2(srcImg.at(0), mat_rs, target_height, target_width, scale_params);
 	//cv::imwrite("D:\\1\\1280.jpg", mat_rs);

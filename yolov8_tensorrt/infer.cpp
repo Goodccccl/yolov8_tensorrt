@@ -98,7 +98,7 @@ std::vector<Detection> Arrange_outputs(std::vector<float*> outputs, int output_a
 }
 
 
-std::vector<Detection> infer(Parameters param, const std::string enginePath, const std::string imgPath, std::vector<YOLOV5ScaleParams> &vetyolovtparams)
+std::vector<Detection> infer(Parameters param, const std::string enginePath, const std::string imgPath, std::vector<YOLOV8ScaleParams> &vetyolovtparams)
 {
 	std::vector<unsigned char> model_data = load_engine(enginePath);
 	nvinfer1::IRuntime* runtime = nvinfer1::createInferRuntime(sample::gLogger.getTRTLogger());
